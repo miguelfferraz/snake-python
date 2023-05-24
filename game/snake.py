@@ -29,9 +29,9 @@ class Snake:
         self.screen = screen
 
         self.snake_body = [
-            self.head_pos,
-            # [self.pos[0] - self.size, self.pos[1]],
-            # [self.pos[0] - 2 * self.size, self.pos[1]],
+            list(self.head_pos),
+            [self.head_pos[0] - self.size, self.head_pos[1]],
+            [self.head_pos[0] - 2 * self.size, self.head_pos[1]],
         ]
 
         self.direction = None
@@ -51,6 +51,11 @@ class Snake:
             self.head_pos[HORIZONTAL_AXIS] += self.size
         elif self.direction is LEFT:
             self.head_pos[HORIZONTAL_AXIS] -= self.size
+        else:
+            return  # This line prevents the snake body from moving if no direction is set
+
+        self.snake_body.insert(0, list(self.head_pos))
+        self.snake_body.pop()
 
     def update(self):
         self.move()
