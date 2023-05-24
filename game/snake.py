@@ -42,6 +42,9 @@ class Snake:
         if self.direction != opposite_direction:
             self.direction = new_direction
 
+    def grow(self):
+        pass
+
     def move(self):
         if self.direction is UP:
             self.head_pos[VERTICAL_AXIS] -= self.size

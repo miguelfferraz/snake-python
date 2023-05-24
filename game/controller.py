@@ -2,6 +2,7 @@ import pygame as pg
 
 import game.constants as consts
 from game.snake import Snake, MOVEMENTS
+from game.food import Food
 
 CLOCK = pg.time.Clock()
 
@@ -12,14 +13,17 @@ class Controller:
         pg.display.set_caption(caption)
         self.screen = pg.display.set_mode(size)
 
+        self.score = 0
         self.game_over = False
 
         self.snake = Snake(
             starting_pos=[size[0] // 2, size[1] // 2],
-            size=consts.SNAKE_SIZE,
+            size=consts.ENTITIES_SIZE,
             color=consts.SNAKE_COLOR,
             screen=self.screen,
         )
+
+        self.food = Food(size=consts.ENTITIES_SIZE, color=consts.FOOD_COLOR, screen=self.screen)
 
     def run(self):
         while not self.game_over:
@@ -46,4 +50,12 @@ class Controller:
 
     def update(self):
         self.screen.fill(consts.SCREEN_COLOR)
+
+        if self.snake.head_pos == self.food.pos:
+            self.snake.grow()
+            self.food.eat()
+
+            self.score += 1
+
         self.snake.update()
+        self.food.update()
