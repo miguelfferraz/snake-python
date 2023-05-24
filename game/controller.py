@@ -1,5 +1,13 @@
 import pygame as pg
 
+from game.snake import Snake, MV_UP_KEYS, MV_DOWN_KEYS, MV_RIGHT_KEYS, MV_LEFT_KEYS
+
+MOVEMENTS = MV_UP_KEYS + MV_DOWN_KEYS + MV_RIGHT_KEYS + MV_LEFT_KEYS
+
+CLOCK = pg.time.Clock()
+
+SCREEN_COLOR = (0, 0, 0)
+
 
 class Controller:
     def __init__(self, caption: str = "Snake", size: tuple = (800, 600)):
@@ -9,15 +17,31 @@ class Controller:
 
         self.game_over = False
 
+        self.snake = Snake([size[0] // 2, size[1] // 2], self.screen)
+
     def run(self):
         while not self.game_over:
-            for event in pg.event.get():
-                if event.type == pg.QUIT or (
-                    event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE
-                ):
-                    self.game_over = True
+            self.handle_events()
+            self.update()
 
-            self.screen.fill((0, 0, 0))
-            pg.display.flip()
+            pg.display.update()
+
+            # Refresh rate
+            CLOCK.tick(25)
 
         pg.quit()
+
+    def handle_events(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                self.game_over = True
+            elif event.type == pg.KEYDOWN:
+                if event.key in MOVEMENTS:
+                    self.snake.change_direction(event.key)
+                # Pressing 'Esc' key create an event to quit the game
+                elif event.key == pg.K_ESCAPE:
+                    pg.event.post(pg.event.Event(pg.QUIT))
+
+    def update(self):
+        self.screen.fill(SCREEN_COLOR)
+        self.snake.update()
